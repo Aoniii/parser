@@ -8,7 +8,7 @@ OBJS		=	$(SRCS:.c=.o)
 OBJS_DIR 	=	objects
 OBJS_PATH	=	$(addprefix $(OBJS_DIR)/, $(OBJS))
 
-CC		=	gcc
+CC			=	gcc
 CFLAGS		=	-Wall -Wextra -Werror
 
 $(OBJS_DIR)/%.o: %.c
