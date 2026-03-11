@@ -1,15 +1,15 @@
 -include ./source.mk
 
-NAME			=	parser_tester
+NAME		=	parser_tester
 
-SRCS			+=	main.c
+SRCS		+=	main.c
 
-OBJS			=	$(SRCS:.c=.o)
-OBJS_DIR 		=	objects
-OBJS_PATH		=	$(addprefix $(OBJS_DIR)/, $(OBJS))
+OBJS		=	$(SRCS:.c=.o)
+OBJS_DIR 	=	objects
+OBJS_PATH	=	$(addprefix $(OBJS_DIR)/, $(OBJS))
 
-CC			=	gcc
-CFLAGS			=	-Wall -Wextra -Werror
+CC		=	gcc
+CFLAGS		=	-Wall -Wextra -Werror
 
 $(OBJS_DIR)/%.o: %.c
 	mkdir -p $(@D)
@@ -30,3 +30,4 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
