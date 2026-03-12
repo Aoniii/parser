@@ -1,1 +1,1 @@
-SRCS	=
+SRCS	=	parser.c
