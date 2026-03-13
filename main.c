@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 int	main(int argc, char **argv) {
 	t_parser_error	err = PARSER_SUCCESS;
@@ -13,7 +14,7 @@ int	main(int argc, char **argv) {
 			.long_opt = "count",
 			.flags = OPT_SHORT | OPT_LONG | TYPE_INT,
 			.value = &count,
-			.help = "example"
+			.help = "Example of a counter variable"
 		},
 		{0}
 	};
@@ -25,7 +26,14 @@ int	main(int argc, char **argv) {
 		return (1);
 	}
 
-	//TODO: implement parsing information printing
+	printf("Value of count: %d\n", count);
+	
+	int	index = 0;
+	while (args[index]) {
+		printf("Argument: %s\n", args[index]);
+		index++;
+	}
+
 	cleaner(args);
     return (0);
 }
