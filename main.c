@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 int	main(int argc, char **argv) {
-	t_parser_error	err = PARSER_SUCCESS;
+	t_parser_ctx	ctx;
+	ctx.err = PARSER_SUCCESS;
 
 	int	count = 0;
 
@@ -19,8 +20,8 @@ int	main(int argc, char **argv) {
 		{0}
 	};
 
-	char	**args = parser(argc, argv, option, MODE_PERMISSIVE, &err);
-	if (err != PARSER_SUCCESS) {
+	char	**args = parser(argc, argv, option, MODE_PERMISSIVE, &ctx);
+	if (ctx.err != PARSER_SUCCESS) {
 		//TODO: implement error handling
 		cleaner(args);
 		return (1);

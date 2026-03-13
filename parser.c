@@ -39,7 +39,7 @@ static const t_option	*find_short_option(const t_option *options, char c);
  *			remaining tokens to be treated as positional arguments,
  *			regardless of the current mode.
  */
-char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_error *err) {
+char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_ctx *ctx) {
 	int		index = 1;
 	bool	force_arg = false;
 	char	**args = NULL;
@@ -47,9 +47,13 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 	while (index < argc) {
 		char	*token = argv[index];
 
+		ctx->token = token;
+		ctx->opt = NULL;
+		ctx->value = NULL;
+
 		if (force_arg) {
-			char	**tmp = append_arg(args, token, err);
-			if (!tmp) return (args);
+			char	**tmp = append_arg(args, token, ctx);
+			if (!tmp || ctx->err == ERR_MALLOC_FAILED) return (args);
 			args = tmp;
 
 			index++;
@@ -75,24 +79,26 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 			}
 
 			const t_option *opt = find_long_option(options, key);
+			ctx->opt = opt;
+
 			if (!opt) {
 				if (equal_pos) *equal_pos = '=';
-				*err = ERR_UNKNOW_OPTION;
-				return (NULL);
+				ctx->err = ERR_UNKNOW_OPTION;
+				return (args);
 			}
 
-			if (!equal_pos && (opt->flags & (TYPE_INT | TYPE_STRING | TYPE_UINT))) {
+			if (!equal_pos && (opt->flags & (TYPE_INT | TYPE_STRING | TYPE_UINT | TYPE_DOUBLE))) {
 				if (index + 1 < argc) {
 					value = argv[++index];
 				} else {
-					*err = ERR_MISSING_VALUE;
-					return (NULL);
+					ctx->err = ERR_MISSING_VALUE;
+					return (args);
 				}
 			}
-			assign(opt, value, err);
+			assign(opt, value, ctx);
     
 			if (equal_pos) *equal_pos = '=';
-			if (*err != PARSER_SUCCESS) return (NULL);
+			if (ctx->err != PARSER_SUCCESS) return (args);
     
 			index++;
 			continue;
@@ -104,8 +110,10 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 
 			while (*p) {
 				const t_option	*opt = find_short_option(options, *p);
+				ctx->opt = opt;
+
 				if (!opt) {
-					*err = ERR_UNKNOW_OPTION;
+					ctx->err = ERR_UNKNOW_OPTION;
 					return (args);
 				}
 
@@ -118,13 +126,13 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 						index++;
 						value = argv[index];
 					} else {
-						*err = ERR_MISSING_VALUE;
+						ctx->err = ERR_MISSING_VALUE;
 						return (args);
 					}
 				}
 
-				assign(opt, value, err);
-				if (*err != PARSER_SUCCESS)
+				assign(opt, value, ctx);
+				if (ctx->err != PARSER_SUCCESS)
 					return (args);
 
 				p++;
@@ -133,8 +141,8 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 			continue;
 		}
 
-		char	**tmp = append_arg(args, token, err);
-		if (!tmp) return (args);
+		char	**tmp = append_arg(args, token, ctx);
+		if (!tmp || ctx->err == ERR_MALLOC_FAILED) return (args);
 		args = tmp;
 
 		index++;
@@ -145,7 +153,7 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 }
 
 static const t_option	*find_long_option(const t_option *options, char *key) {
-	while (options->short_opt || options->long_opt) {
+	while (options && (options->short_opt || options->long_opt)) {
 		if (options->flags & OPT_LONG)
 			if (options->long_opt)
 				if (strcmp(options->long_opt, key) == 0)
@@ -158,8 +166,9 @@ static const t_option	*find_long_option(const t_option *options, char *key) {
 
 static const t_option	*find_short_option(const t_option *options, char c) {
 	while (options && (options->short_opt || options->long_opt)) {
-        if ((options->flags & OPT_SHORT) && options->short_opt == c)
-            return (options);
+        if ((options->flags & OPT_SHORT))
+			if (options->short_opt == c)
+            	return (options);
         options++;
     }
     return NULL;

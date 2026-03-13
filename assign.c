@@ -4,20 +4,20 @@
 #include <limits.h>
 #include <errno.h>
 
-typedef void		(*t_assign_fn)(const t_option *options, char *value, t_parser_error *err);
+typedef void		(*t_assign_fn)(const t_option *options, char *value, t_parser_ctx *ctx);
 
 typedef struct		s_assign_entry {
 	int				type_flag;
 	t_assign_fn		fn;
 }					t_assign_entry;
 
-static void	assign_boolean(const t_option *options, char *value, t_parser_error *err);
-static void	assign_int(const t_option *options, char *value, t_parser_error *err);
-static void	assign_uint(const t_option *options, char *value, t_parser_error *err);
-static void	assign_double(const t_option *options, char *value, t_parser_error *err);
-static void	assign_string(const t_option *options, char *value, t_parser_error *err);
-static void	assign_count(const t_option *options, char *value, t_parser_error *err);
-static void	assign_callback(const t_option *options, char *value, t_parser_error *err);
+static void	assign_boolean(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_int(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_uint(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_double(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_string(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_count(const t_option *options, char *value, t_parser_ctx *ctx);
+static void	assign_callback(const t_option *options, char *value, t_parser_ctx *ctx);
 
 /**
  * @brief Assigns an option's value to its typed target.
@@ -37,9 +37,9 @@ static void	assign_callback(const t_option *options, char *value, t_parser_error
  *
  * @param options	Pointer to the option description (t_option).
  * @param value		Raw string associated with the option (or NULL if none).
- * @param err		Pointer to the parser error code.
+ * @param ctx		Pointer to the parser context.
  */
-void	assign(const t_option *options, char *value, t_parser_error *err) {
+void	assign(const t_option *options, char *value, t_parser_ctx *ctx) {
 	if (!options || !options->value)
 		return;
 
@@ -57,22 +57,23 @@ void	assign(const t_option *options, char *value, t_parser_error *err) {
 	int	index = 0;
 	while (assign_table[index].type_flag) {
 		if (options->flags & assign_table[index].type_flag) {
-			assign_table[index].fn(options, value, err);
+			assign_table[index].fn(options, value, ctx);
 			return;
 		}
 		index++;
 	}
 }
 
-static void	assign_boolean(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_boolean(const t_option *options, char *value, t_parser_ctx *ctx) {
 	(void)value;
-	(void)err;
+	(void)ctx;
 	*((bool *)options->value) = true;
 }
 
-static void	assign_int(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_int(const t_option *options, char *value, t_parser_ctx *ctx) {
 	if (!value) {
-		*err = ERR_MISSING_VALUE;
+		ctx->err = ERR_MISSING_VALUE;
+		ctx->value = value;
 		return;
 	}
 
@@ -81,7 +82,8 @@ static void	assign_int(const t_option *options, char *value, t_parser_error *err
 	long	result = strtol(value, &endptr, 10);
 
 	if (*endptr != '\0' || endptr == value) {
-        *err = ERR_INVALID_FORMAT;
+        ctx->err = ERR_INVALID_FORMAT;
+		ctx->value = value;
         return;
     }
 
@@ -104,9 +106,10 @@ static void	assign_int(const t_option *options, char *value, t_parser_error *err
     }
 }
 
-static void	assign_uint(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_uint(const t_option *options, char *value, t_parser_ctx *ctx) {
 	if (!value) {
-		*err = ERR_MISSING_VALUE;
+		ctx->err = ERR_MISSING_VALUE;
+		ctx->value = value;
 		return;
 	}
 	
@@ -114,7 +117,8 @@ static void	assign_uint(const t_option *options, char *value, t_parser_error *er
     while (*temp == ' ' || (*temp >= '\t' && *temp <= '\r')) 
         temp++;
     if (*temp == '-') {
-        *err = ERR_INVALID_FORMAT;
+        ctx->err = ERR_INVALID_FORMAT;
+		ctx->value = value;
         return;
     }
 
@@ -123,7 +127,8 @@ static void	assign_uint(const t_option *options, char *value, t_parser_error *er
     unsigned long result = strtoul(value, &endptr, 10);
 
     if (*endptr != '\0' || endptr == value) {
-        *err = ERR_INVALID_FORMAT;
+        ctx->err = ERR_INVALID_FORMAT;
+		ctx->value = value;
         return;
     }
 
@@ -139,9 +144,10 @@ static void	assign_uint(const t_option *options, char *value, t_parser_error *er
     }
 }
 
-static void	assign_double(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_double(const t_option *options, char *value, t_parser_ctx *ctx) {
 	if (!value) {
-		*err = ERR_MISSING_VALUE;
+		ctx->err = ERR_MISSING_VALUE;
+		ctx->value = value;
 		return;
 	}
 
@@ -150,36 +156,39 @@ static void	assign_double(const t_option *options, char *value, t_parser_error *
 	double	result = strtod(value, &endptr);
 
 	if (*endptr != '\0' || endptr == value) {
-		*err = ERR_INVALID_FORMAT;
+		ctx->err = ERR_INVALID_FORMAT;
+		ctx->value = value;
 		return;
 	}
 
 	if (errno == ERANGE) {
-		*err = ERR_INVALID_FORMAT;
+		ctx->err = ERR_INVALID_FORMAT;
+		ctx->value = value;
 		return;
 	}
 
 	*((double *)options->value) = result;
 }
 
-static void	assign_string(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_string(const t_option *options, char *value, t_parser_ctx *ctx) {
 	if (!value) {
-		*err = ERR_MISSING_VALUE;
+		ctx->err = ERR_MISSING_VALUE;
+		ctx->value = value;
 		return;
 	}
 
 	*((char **)options->value) = value;
 }
 
-static void	assign_count(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_count(const t_option *options, char *value, t_parser_ctx *ctx) {
 	(void)value;
-	(void)err;
+	(void)ctx;
 	(*((int *)options->value))++;
 }
 
-static void	assign_callback(const t_option *options, char *value, t_parser_error *err) {
+static void	assign_callback(const t_option *options, char *value, t_parser_ctx *ctx) {
 	(void)value;
-	(void)err;
+	(void)ctx;
 	t_callback func = (t_callback)options->value;
 
 	func();

@@ -39,10 +39,17 @@ typedef enum	e_parser_error {
 	ERR_MALLOC_FAILED
 }				t_parser_error;
 
+typedef struct		s_parser_ctx {
+	t_parser_error	err;
+	const t_option	*opt;
+	char			*token;
+	char			*value;
+}					t_parser_ctx;
+
 /**		Fonctions				*/
-char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_error *err);
-void	assign(const t_option *options, char *value, t_parser_error *err);
-char	**append_arg(char **args, char *new_arg, t_parser_error *err);
+char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_ctx *ctx);
+void	assign(const t_option *options, char *value, t_parser_ctx *ctx);
+char	**append_arg(char **args, char *new_arg, t_parser_ctx *ctx);
 void	cleaner(char **args);
 void    debug(char **args, const t_option *options);
 
