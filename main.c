@@ -5,7 +5,7 @@
 int	main(int argc, char **argv) {
 	t_parser_error	err = PARSER_SUCCESS;
 
-	long long	count = 0;
+	int	count = 0;
 
 	t_option option[] = {
 		{
