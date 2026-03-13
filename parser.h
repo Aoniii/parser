@@ -18,11 +18,6 @@
 # define TYPE_COUNT				0x2000
 # define TYPE_CALLBACK			0x4000
 
-/**		Masks					*/
-# define MASK_MODE				0x000F
-# define MASK_APPEARANCE		0x00F0
-# define MASK_TYPE				0xFF00
-
 /**		Parser struct			*/
 typedef struct	s_option {
 	char		short_opt;
