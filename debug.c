@@ -7,9 +7,9 @@ void    debug(char **args, const t_option *options) {
     while (options && (options->short_opt || options->long_opt)) {
         /**		Display the option name					*/
         if (options->long_opt)
-            printf("--%-10s ", options->long_opt);
+            printf("--%-20s ", options->long_opt);
         else
-            printf("-%-11c ", options->short_opt);
+            printf("-%-21c ", options->short_opt);
 
         printf("| Value: ");
 
