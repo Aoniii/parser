@@ -3,6 +3,7 @@
 #include <string.h>
 
 static const t_option	*find_long_option(const t_option *options, char *key);
+static const t_option	*find_short_option(const t_option *options, char c);
 
 /**
  * @brief Command-line argument parsing engine.
@@ -99,7 +100,35 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 
 		/**		Short option parsing			*/
 		if (strlen(token) > 1 && token[0] == '-') {
-			//TODO: implement short option parsing
+			char	*p = token + 1;
+
+			while (*p) {
+				const t_option	*opt = find_short_option(options, *p);
+				if (!opt) {
+					*err = ERR_UNKNOW_OPTION;
+					return (args);
+				}
+
+				char	*value = NULL;
+				if (opt->flags & (TYPE_INT | TYPE_UINT | TYPE_STRING | TYPE_DOUBLE)) {
+					if (*(p + 1)) {
+						value = p + 1;
+						p += strlen(value) - 1;
+					} else if (index + 1 < argc) {
+						index++;
+						value = argv[index];
+					} else {
+						*err = ERR_MISSING_VALUE;
+						return (args);
+					}
+				}
+
+				assign(opt, value, err);
+				if (*err != PARSER_SUCCESS)
+					return (args);
+
+				p++;
+			}
 			index++;
 			continue;
 		}
@@ -120,10 +149,19 @@ static const t_option	*find_long_option(const t_option *options, char *key) {
 		if (options->flags & OPT_LONG)
 			if (options->long_opt)
 				if (strcmp(options->long_opt, key) == 0)
-					return options;
+					return (options);
 		options++;	
 	}
 
 	return (NULL);
+}
+
+static const t_option	*find_short_option(const t_option *options, char c) {
+	while (options && (options->short_opt || options->long_opt)) {
+        if ((options->flags & OPT_SHORT) && options->short_opt == c)
+            return (options);
+        options++;
+    }
+    return NULL;
 }
 
