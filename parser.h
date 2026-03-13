@@ -44,5 +44,6 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 void	assign(const t_option *options, char *value, t_parser_error *err);
 char	**append_arg(char **args, char *new_arg, t_parser_error *err);
 void	cleaner(char **args);
+void    debug(char **args, const t_option *options);
 
 #endif

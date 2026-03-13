@@ -26,13 +26,7 @@ int	main(int argc, char **argv) {
 		return (1);
 	}
 
-	printf("Value of count: %d\n", count);
-	
-	int	index = 0;
-	while (args[index]) {
-		printf("Argument: %s\n", args[index]);
-		index++;
-	}
+	debug(args, option);
 
 	cleaner(args);
     return (0);
