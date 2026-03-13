@@ -2,36 +2,26 @@
 # define PARSER_H
 
 /**		Parser modes			*/
-# define MODE_STRICT			0x00000001
-# define MODE_PERMISSIVE		0x00000002
+# define MODE_STRICT			0x0001
+# define MODE_PERMISSIVE		0x0002
 
 /**		Data types				*/
-# define OPT_SHORT				0x00000010
-# define OPT_LONG				0x00000020
-
-/**		Flag value types		*/
-# define OPT_VALUE_REQUIRED		0x00000100
-# define OPT_VALUE_OPTIONAL		0x00000200
+# define OPT_SHORT				0x0010
+# define OPT_LONG				0x0020
 
 /**		Flag types				*/
-# define TYPE_NONE				0x00001000
-# define TYPE_BOOLEAN			0x00002000
-# define TYPE_INT				0x00004000
-# define TYPE_UINT				0x00008000
-# define TYPE_FLOAT				0x00010000
-# define TYPE_STRING			0x00020000
-# define TYPE_CALLBACK			0x00040000
-
-/**		Special					*/
-# define OPT_INCREMENT			0x00100000
-# define OPT_STOP_PARSING		0x00200000
+# define TYPE_BOOLEAN			0x0100
+# define TYPE_INT				0x0200
+# define TYPE_UINT				0x0400
+# define TYPE_FLOAT				0x0800
+# define TYPE_STRING			0x1000
+# define TYPE_COUNT				0x2000
+# define TYPE_CALLBACK			0x4000
 
 /**		Masks					*/
-# define MASK_MODE				0x0000000F
-# define MASK_APPEARANCE		0x000000F0
-# define MASK_VALUE_REQ			0x00000F00
-# define MASK_TYPE				0x000FF000
-# define MASK_SPECIAL			0x00F00000
+# define MASK_MODE				0x000F
+# define MASK_APPEARANCE		0x00F0
+# define MASK_TYPE				0xFF00
 
 /**		Parser struct			*/
 typedef struct	s_option {
@@ -42,6 +32,9 @@ typedef struct	s_option {
 	const char	*help;
 }				t_option;
 
+/**		Callback fonctions		*/
+typedef void	(*t_callback)(void);
+
 /**		Errors					*/
 typedef enum	e_parser_error {
 	PARSER_SUCCESS = 0,
@@ -50,5 +43,10 @@ typedef enum	e_parser_error {
 	ERR_INVALID_FORMAT,
 	ERR_MALLOC_FAILED
 }				t_parser_error;
+
+/**		Fonctions				*/
+char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_error *err);
+void	assign(const t_option *options, char *value, t_parser_error *err);
+void	cleaner(char **args);
 
 #endif
