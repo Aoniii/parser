@@ -47,7 +47,10 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 		char	*token = argv[index];
 
 		if (force_arg) {
-			//TODO: implement appending argument
+			char	**tmp = append_arg(args, token, err);
+			if (!tmp) return (args);
+			args = tmp;
+
 			index++;
 			continue;
 		}
@@ -101,7 +104,10 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 			continue;
 		}
 
-		//TODO: implement appending argument
+		char	**tmp = append_arg(args, token, err);
+		if (!tmp) return (args);
+		args = tmp;
+
 		index++;
 		if (mode == MODE_STRICT)
 			force_arg = true;
