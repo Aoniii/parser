@@ -24,20 +24,13 @@ static const t_option	*find_short_option(const t_option *options, char c);
  *					positional argument.
  *					- MODE_PERMISSIVE: allow options and positionals
  *					to be interleaved.
- * @param err		Output parameter for error reporting. Set to
- *					PARSER_SUCCESS on success, or one of:
- *					- ERR_UNKNOW_OPTION
- *					- ERR_MISSING_VALUE
- *					- ERR_INVALID_FORMAT
- *					- ERR_MALLOC_FAILED
+ * @param ctx		Output parameter for error reporting. Set to
+ *					PARSER_SUCCESS on success, or one of the errors defined in t_parser_error.
  *
  * @return char**	A NULL-terminated, heap-allocated array of positional
- *					arguments on success, or NULL on critical error. The caller is
- *					responsible for freeing this array (see cleaner()).
+ *					arguments on success, or NULL on critical error. The caller is responsible for freeing this array (see cleaner()).
  *
- * @note	The special token "--" stops option parsing and forces all
- *			remaining tokens to be treated as positional arguments,
- *			regardless of the current mode.
+ * @note	The special token "--" stops option parsing and forces all remaining tokens to be treated as positional arguments, regardless of the current mode.
  */
 char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_ctx *ctx) {
 	int		index = 1;
