@@ -1,6 +1,6 @@
 -include ./source.mk
 
-NAME		=	parser_tester
+NAME		=	parser
 
 SRCS		+=	main.c
 
