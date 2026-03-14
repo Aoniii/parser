@@ -52,5 +52,6 @@ void	assign(const t_option *options, char *value, t_parser_ctx *ctx);
 char	**append_arg(char **args, char *new_arg, t_parser_ctx *ctx);
 void	cleaner(char **args);
 void    debug(char **args, const t_option *options);
+void	error(const char *program, t_parser_ctx *ctx);
 
 #endif

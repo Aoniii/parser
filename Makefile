@@ -2,6 +2,7 @@
 
 NAME		=	parser
 
+SRCS		=	$(PARSER_SRCS)
 SRCS		+=	main.c
 
 OBJS		=	$(SRCS:.c=.o)

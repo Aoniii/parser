@@ -1,6 +1,7 @@
-SRCS	=	append.c
-SRCS	+=	assign.c
-SRCS	+=	cleaner.c
-SRCS	+=	debug.c
-SRCS	+=	parser.c
+PARSER_SRCS	=	append.c
+PARSER_SRCS	+=	assign.c
+PARSER_SRCS	+=	cleaner.c
+PARSER_SRCS	+=	debug.c
+PARSER_SRCS	+=	error.c
+PARSER_SRCS	+=	parser.c
 

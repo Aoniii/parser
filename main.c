@@ -22,7 +22,7 @@ int	main(int argc, char **argv) {
 
 	char	**args = parser(argc, argv, option, MODE_PERMISSIVE, &ctx);
 	if (ctx.err != PARSER_SUCCESS) {
-		//TODO: implement error handling
+		error(argv[0], &ctx);
 		cleaner(args);
 		return (1);
 	}
