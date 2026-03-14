@@ -40,6 +40,9 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 	while (index < argc) {
 		char	*token = argv[index];
 
+		if (ctx->err == CALLBACK_EXIT)
+			return (args);
+
 		ctx->token = token;
 		ctx->opt = NULL;
 		ctx->value = NULL;
@@ -146,24 +149,34 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 }
 
 static const t_option	*find_long_option(const t_option *options, char *key) {
-	while (options && (options->short_opt || options->long_opt)) {
+	while (options) {
+		if (options->flags == 0 && !options->short_opt && !options->long_opt)
+			break;
+		if (options->flags & OPT_CATEGORY) {
+			options++;
+			continue;
+		}
 		if (options->flags & OPT_LONG)
 			if (options->long_opt)
 				if (strcmp(options->long_opt, key) == 0)
 					return (options);
-		options++;	
+		options++;
 	}
-
 	return (NULL);
 }
 
 static const t_option	*find_short_option(const t_option *options, char c) {
-	while (options && (options->short_opt || options->long_opt)) {
-        if ((options->flags & OPT_SHORT))
+	while (options) {
+		if (options->flags == 0 && !options->short_opt && !options->long_opt)
+			break;
+		if (options->flags & OPT_CATEGORY) {
+			options++;
+			continue;
+		}
+		if (options->flags & OPT_SHORT)
 			if (options->short_opt == c)
             	return (options);
         options++;
     }
-    return NULL;
+    return (NULL);
 }
-

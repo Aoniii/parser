@@ -195,7 +195,12 @@ static void	assign_count(const t_option *options, char *value, t_parser_ctx *ctx
 static void	assign_callback(const t_option *options, char *value, t_parser_ctx *ctx) {
 	(void)value;
 	(void)ctx;
-	t_callback func = (t_callback)options->value;
+	t_callback_info *callback = (t_callback_info *)options->value;
 
-	func();
+	if (callback && callback->fn) {
+		callback->fn(callback->data);
+		
+		if (options->flags & OPT_CALLBACK_EXIT)
+			ctx->err = CALLBACK_EXIT;
+	}
 }

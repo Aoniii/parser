@@ -8,6 +8,8 @@
 /**		Data types				*/
 # define OPT_SHORT				0x0010
 # define OPT_LONG				0x0020
+# define OPT_CALLBACK_EXIT		0x0040
+# define OPT_HIDDEN_HELP		0x0080
 
 /**		Flag types				*/
 # define TYPE_BOOLEAN			0x0100
@@ -38,16 +40,22 @@ typedef struct	s_option {
 }				t_option;
 
 /**		Callback fonctions		*/
-typedef void	(*t_callback)(void);
+typedef void	(*t_callback)(void *data);
+
+typedef struct	s_callback_info {
+	t_callback	fn;
+	void		*data;
+}				t_callback_info;
 
 /**		Errors					*/
 typedef enum	e_parser_error {
 	PARSER_SUCCESS = 0,
+	CALLBACK_EXIT,
 	ERR_UNKNOW_OPTION,
 	ERR_MISSING_VALUE,
 	ERR_INVALID_FORMAT,
 	ERR_OVERFLOW,
-	ERR_MALLOC_FAILED
+	ERR_MALLOC_FAILED,
 }				t_parser_error;
 
 typedef struct		s_parser_ctx {
@@ -57,6 +65,13 @@ typedef struct		s_parser_ctx {
 	char			*value;
 }					t_parser_ctx;
 
+/**		Help					*/
+
+typedef struct			s_help_data {
+	const t_parser_info	info;
+	const t_option		*options;
+}						t_help_data;
+
 /**		Fonctions				*/
 char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser_ctx *ctx);
 void	assign(const t_option *options, char *value, t_parser_ctx *ctx);
@@ -64,6 +79,6 @@ char	**append_arg(char **args, char *new_arg, t_parser_ctx *ctx);
 void	cleaner(char **args);
 void    debug(char **args, const t_option *options);
 void	error(const char *program, t_parser_ctx *ctx);
-void	help(const t_parser_info info, const t_option *options);
+void	callback_help(void *data);
 
 #endif

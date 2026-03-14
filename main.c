@@ -15,23 +15,29 @@ int	main(int argc, char **argv) {
 	};
 
 	/**		Options			*/
-	int	count = 0;
+	int	i = 0;
 
 	t_option option[] = {
 		CATEGORY("Category example"),
 		{
-			.short_opt	= 'c',
-			.long_opt	= "count",
+			.short_opt	= 'i',
+			.long_opt	= "int",
 			.flags		= OPT_SHORT | OPT_LONG | TYPE_INT,
-			.value		= &count,
-			.help		= "Example of a counter variable"
+			.value		= &i,
+			.help		= "Example of an integer variable"
 		},
 		{
 			.short_opt	= 'h',
 			.long_opt	= "help",
-			.flags		= OPT_SHORT | OPT_LONG | TYPE_CALLBACK,
-			.value		= help,
-			.help		= ""
+			.flags		= OPT_SHORT | OPT_LONG | OPT_CALLBACK_EXIT | OPT_HIDDEN_HELP | TYPE_CALLBACK,
+			.value		= (void *)&(t_callback_info){
+				.fn = callback_help,
+				.data = (void *)&(t_help_data){
+					.info = info,
+					.options = option
+				}
+			},
+			.help		= "Example of a callback"
 		},
 		{0}
 	};
