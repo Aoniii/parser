@@ -183,6 +183,12 @@ static void	assign_string(const t_option *options, char *value, t_parser_ctx *ct
 static void	assign_count(const t_option *options, char *value, t_parser_ctx *ctx) {
 	(void)value;
 	(void)ctx;
+
+	if (*((int *)options->value) == INT_MAX) {
+		ctx->err = ERR_OVERFLOW;
+		return;
+	}
+
 	(*((int *)options->value))++;
 }
 

@@ -18,7 +18,17 @@
 # define TYPE_COUNT				0x2000
 # define TYPE_CALLBACK			0x4000
 
+/**		Categories help			*/
+# define OPT_CATEGORY			(1 << 15)
+# define CATEGORY(title)		{ .flags = OPT_CATEGORY, .help = title }
+
 /**		Parser struct			*/
+typedef struct	s_parser_info {
+	const char	*program;
+	const char	*usage;
+	const char	*description;
+}				t_parser_info;
+
 typedef struct	s_option {
 	char		short_opt;
 	const char	*long_opt;
@@ -36,6 +46,7 @@ typedef enum	e_parser_error {
 	ERR_UNKNOW_OPTION,
 	ERR_MISSING_VALUE,
 	ERR_INVALID_FORMAT,
+	ERR_OVERFLOW,
 	ERR_MALLOC_FAILED
 }				t_parser_error;
 
@@ -53,5 +64,6 @@ char	**append_arg(char **args, char *new_arg, t_parser_ctx *ctx);
 void	cleaner(char **args);
 void    debug(char **args, const t_option *options);
 void	error(const char *program, t_parser_ctx *ctx);
+void	help(const t_parser_info info, const t_option *options);
 
 #endif

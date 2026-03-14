@@ -12,6 +12,9 @@ void	error(const char *program, t_parser_ctx *ctx) {
 		case ERR_INVALID_FORMAT:
 			printf("%s: invalid value ('%s')\n", program, ctx->value);
 			break;
+		case ERR_OVERFLOW:
+			printf("%s: value overflow of option ('%s')\n", program, ctx->token);
+			break;
 		case ERR_MALLOC_FAILED:
 			printf("%s: allocation failed\n", program);
 			break;
