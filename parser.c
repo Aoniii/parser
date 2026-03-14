@@ -46,7 +46,7 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 
 		if (force_arg) {
 			char	**tmp = append_arg(args, token, ctx);
-			if (!tmp || ctx->err == ERR_MALLOC_FAILED) return (args);
+			if (ctx->err == ERR_MALLOC_FAILED) return (tmp ? tmp : args);
 			args = tmp;
 
 			index++;
@@ -135,7 +135,7 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 		}
 
 		char	**tmp = append_arg(args, token, ctx);
-		if (!tmp || ctx->err == ERR_MALLOC_FAILED) return (args);
+		if (ctx->err == ERR_MALLOC_FAILED) return (tmp ? tmp : args);
 		args = tmp;
 
 		index++;

@@ -13,7 +13,7 @@ void	error(const char *program, t_parser_ctx *ctx) {
 			printf("%s: invalid value ('%s')\n", program, ctx->value);
 			break;
 		case ERR_MALLOC_FAILED:
-			printf("%s: allocation failed", program);
+			printf("%s: allocation failed\n", program);
 			break;
 		default:
 			break;
