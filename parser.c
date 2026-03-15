@@ -117,17 +117,20 @@ char	**parser(int argc, char **argv, const t_option *options, int mode, t_parser
 				if (opt->flags & (TYPE_INT | TYPE_UINT | TYPE_STRING | TYPE_DOUBLE)) {
 					if (*(p + 1)) {
 						value = p + 1;
-						p += strlen(value) - 1;
+						assign(opt, value, ctx);
+						break;
 					} else if (index + 1 < argc) {
 						index++;
 						value = argv[index];
+						assign(opt, value, ctx);
 					} else {
 						ctx->err = ERR_MISSING_VALUE;
 						return (args);
 					}
+				} else {
+					assign(opt, value, ctx);	
 				}
 
-				assign(opt, value, ctx);
 				if (ctx->err != PARSER_SUCCESS)
 					return (args);
 
