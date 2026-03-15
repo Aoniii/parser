@@ -18,7 +18,7 @@ int	main(int argc, char **argv) {
 	int	i = 0;
 
 	t_option option[] = {
-		CATEGORY("Category example"),
+		CATEGORY("Category example:"),
 		{
 			.short_opt	= 'i',
 			.long_opt	= "int",
