@@ -87,7 +87,7 @@ int	main(int argc, char **argv) {
 	if (ctx.err != PARSER_SUCCESS) {
 		error(info.program, &ctx);
 		cleaner(args);
-		return (1);
+		return (ctx.err == CALLBACK_EXIT ? 0 : 1);
 	}
 
 	/**		Execution		*/

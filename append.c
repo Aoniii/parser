@@ -8,6 +8,11 @@ char	**append_arg(char **args, char *new_arg, t_parser_ctx *ctx) {
 		while (args[size])
 			size++;
 
+	if (!new_arg) {
+		ctx->err = ERR_MALLOC_FAILED;
+		return (args);
+	}
+
 	char	**new = realloc(args, sizeof(char *) * (size + 2));
 	if (!new) {
 		ctx->err = ERR_MALLOC_FAILED;
