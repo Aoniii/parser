@@ -4,7 +4,13 @@
 
 void    debug(char **args, const t_option *options) {
     printf("--- OPTIONS ---\n");
-    while (options && (options->short_opt || options->long_opt)) {
+    while (options) {
+        if (options->flags == 0 && !options->short_opt && !options->long_opt)
+            break;
+        if (options->flags & OPT_CATEGORY) {
+            options++;
+            continue;
+        }
         /**		Display the option name					*/
         if (options->long_opt)
             printf("--%-20s ", options->long_opt);

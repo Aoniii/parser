@@ -15,16 +15,56 @@ int	main(int argc, char **argv) {
 	};
 
 	/**		Options			*/
-	int	i = 0;
+	bool			b = false;
+	int				i = 0;
+	unsigned int	u = 0;
+	double			d = 0;
+	char			*s = 0;
+	int				c = 0;
 
 	t_option option[] = {
 		CATEGORY("Category example:"),
+		{
+			.short_opt	= 'b',
+			.long_opt	= "bool",
+			.flags		= OPT_SHORT | OPT_LONG | TYPE_BOOLEAN,
+			.value		= &b,
+			.help		= "Example of a boolean variable"
+		},
 		{
 			.short_opt	= 'i',
 			.long_opt	= "int",
 			.flags		= OPT_SHORT | OPT_LONG | TYPE_INT,
 			.value		= &i,
 			.help		= "Example of an integer variable"
+		},
+		{
+			.short_opt	= 'u',
+			.long_opt	= "uint",
+			.flags		= OPT_SHORT | OPT_LONG | TYPE_UINT,
+			.value		= &u,
+			.help		= "Example of an unsigned integer variable"
+		},
+		{
+			.short_opt	= 'd',
+			.long_opt	= "double",
+			.flags		= OPT_SHORT | OPT_LONG | TYPE_DOUBLE,
+			.value		= &d,
+			.help		= "Example of a double variable"
+		},
+		{
+			.short_opt	= 's',
+			.long_opt	= "string",
+			.flags		= OPT_SHORT | OPT_LONG | TYPE_STRING,
+			.value		= &s,
+			.help		= "Example of a string variable"
+		},
+		{
+			.short_opt	= 'c',
+			.long_opt	= "count",
+			.flags		= OPT_SHORT | OPT_LONG | TYPE_COUNT,
+			.value		= &c,
+			.help		= "Example of a counter variable"
 		},
 		{
 			.short_opt	= 'h',
