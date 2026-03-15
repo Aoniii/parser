@@ -6,7 +6,6 @@ A lightweight C library for parsing command-line arguments (`argc`/`argv`) with 
 
 ## Table of Contents
 
-- [Build and run](#build-and-run)
 - [Quick start (example: `main`)](#quick-start-example-main)
 - [Key concepts](#key-concepts)
 - [Parser API](#parser-api)
@@ -17,13 +16,6 @@ A lightweight C library for parsing command-line arguments (`argc`/`argv`) with 
 - [Project structure](#project-structure)
 
 ---
-
-## Build and run
-
-```bash
-make
-./parser [options] [arguments...]
-```
 
 Examples using the sample executable:
 
