@@ -93,7 +93,7 @@ static void	assign_int(const t_option *options, char *value, t_parser_ctx *ctx) 
 	 * and the case where the length is valid but too large or too small for an int.
 	 */
 	if (errno == ERANGE) {
-		if (result > 0) {
+		if (result > 0)
 			*((int *)options->value) = INT_MAX;
 		else
 			*((int *)options->value) = INT_MIN;
